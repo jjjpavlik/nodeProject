@@ -1,0 +1,17 @@
+{
+  "name": "js-project",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "pg": "^8.13.1",
+    "sequelize": "^6.37.5",
+    "webcam-easy": "^1.1.1"
+  }
+}
