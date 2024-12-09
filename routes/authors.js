@@ -2,43 +2,43 @@ const express = require("express");
 const router = express.Router();
 const Authors = require("../models/authors");
 
-// Обробка/Створення автора
+// Processing/Author Creation
 router.post('/', async (req, res) => {
     const { name, email } = req.body;
 
     if (!name || !email) {
-        return res.status(400).json('Поля не можуть бути порожні');
+        return res.status(400).json('Fields cannot be empty.');
     }
 
     try {
         const author = await Authors.create({ name, email });
-        res.status(200).json("Автора додано");
+        res.status(200).json("Author added");
     } catch (err) {
-        res.status(500).json(`Сталася помилка: ${err.message}`);
+        res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 
-// Реалізація видалення автора
+// Implementing author deletion
 router.delete("/:authorId", async (req, res) => {
     const { authorId } = req.params;
     const id = Number(authorId);
 
     if (isNaN(id)) {
-        return res.status(400).json("id може бути тільки цифрою");
+        return res.status(400).json("id can only be a number");
     }
 
     try {
         const author = await Authors.findByPk(id);
 
         if (!author) {
-            return res.status(404).json('Id не знайдено');
+            return res.status(404).json('Id not found');
         }
 
         await author.destroy();
-        res.status(200).json("Успішно видалено");
+        res.status(200).json("Successfully deleted");
 
     } catch (err) {
-        res.status(500).json(`Сталася помилка: ${err}`);
+        res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 

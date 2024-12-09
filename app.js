@@ -10,21 +10,21 @@ const { Categories, Articles, Authors, Comments, Tags } = require("./models/asso
 
 const app = express();
 
-// Middleware для обробки даних з форм
-app.use(express.json()); // Middleware для роботи з JSON
+// Middleware for processing data from forms
+app.use(express.json()); // Middleware for working with JSON
 
-// Маршрути
+// Routes
 app.use('/categories', categoriesRoutes);
 app.use("/tags", tagsRoutes);
 app.use('/articles', articlesRoutes);
 app.use('/authors', authorsRoutes);
 app.use('/comments', commentsRoutes);
 
-// Синхронізація бази даних
+// Database synchronization
 sequelize.sync({ alter: true })
-    .then(() => console.log('База даних синхронізована'))
-    .catch(err => console.error(`Помилка: ${err.message}`));
+    .then(() => console.log('Database synchronized'))
+    .catch(err => console.error(`An error occurred: ${err.message}`));
 
-// Запуск сервера на порту 8080
-app.listen(8080, () => console.log('Сервер розвернуто на порту 8080'));
+// API start
+app.listen(8080, () => console.log('The server is deployed on port 8080'));
 

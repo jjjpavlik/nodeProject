@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const Articles = require("../models/articles");
-const Categories = require("../models/categories"); // Додаємо імпорт Categories
+const Categories = require("../models/categories");
 const Authors = require("../models/authors");
 
-// Обробка/Створення посту
+// Processing/Creating a post
 router.post('/', async (req, res) => {
     const { title, content, authorId, categoryId } = req.body;
 
     if (!title || !content || !authorId || !categoryId) {
-        return res.status(400).json('Поля не можуть бути порожні');
+        return res.status(400).json('Fields cannot be empty.');
     }
 
     try {
@@ -17,88 +17,88 @@ router.post('/', async (req, res) => {
         const authorCheck = await Authors.findOne({ where: { id: authorId } });
 
         if (!categoryCheck) {
-            return res.status(404).json("Такої категорії не існує");
+            return res.status(404).json("There is no such category.");
         }
         if (!authorCheck) {
-            return res.status(404).json("Такого автора не існує");
+            return res.status(404).json("Such an author does not exist.");
         }  
         await Articles.create({ title, content, authorId, categoryId });
-        res.status(200).json("Стаття успішно створена");
+        res.status(200).json("Article successfully created");
     } catch (err) {
-        return res.status(500).json(`Сталася помилка ${err}`);
+        return res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 
-// Отримання всіх статей категорії
+// Get all articles in a category
 router.get("/categories/:categoryId", async (req, res) => {
     const { categoryId } = req.params;
     const checkId = Number(categoryId);
 
     if (isNaN(checkId)) {
-        return res.status(400).json("Id має складатися тільки з цифр");
+        return res.status(400).json("Id must consist only of numbers");
     }
 
     const categoryCheck = await Categories.findOne({ where: { id: categoryId } });
 
     if (!categoryCheck) {
-        return res.status(404).json("Неіснуючий id");
+        return res.status(404).json("Non-existent id");
     }
 
     try {
         const articles = await Articles.findAll({ where: { categoryId } });
         if (articles.length === 0){
-           return res.status(404).json('Статей по цій категорії не знайдено')
+           return res.status(404).json('No articles found in this category')
         }
         res.status(200).json(articles);
     } catch (err) {
-        return res.status(500).json(`Сталася помилка ${err}`);
+        return res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 
-// Отримання всіх статей автора
+// Get all articles by the author
 router.get("/authors/:authorId", async (req, res) => {
     const { authorId } = req.params;
     const checkId = Number(authorId);
 
     if (isNaN(checkId)) {
-        return res.status(400).json("Id має складатися тільки з цифр");
+        return res.status(400).json("Id must consist only of numbers");
     }
 
     const authorCheck = await Authors.findOne({ where: { id: authorId } });
 
     if (!authorCheck) {
-        return res.status(404).json("Неіснуючий id");
+        return res.status(404).json("Non-existent id");
     }
 
     try {
         const articles = await Articles.findAll({ where: { authorId } });
         return articles.length === 0
-            ? res.status(404).json('Статей у цього автора не знайдено')
+            ? res.status(404).json('No articles found by this author')
             : res.status(200).json(articles);
     } catch (err) {
-        return res.status(422).json(`Сталася помилка ${err}`);
+        return res.status(422).json(`An error occurred: ${err.message}`);
     }
 });
 
-// Реалізація видалення статті
+// Implementing article deletion
 router.delete("/:articleId", async (req, res) => {
     const { articleId } = req.params;
     const id = Number(articleId);
 
     if (isNaN(id)) {
-        return res.status(400).json("id може бути тільки цифрою");
+        return res.status(400).json("id can only be a number");
     }
 
     try {
         const article = await Articles.findByPk(id);
         if (!article) {
-            return res.status(404).json('Id не знайдено');
+            return res.status(404).json('Id not found');
         }
 
         await article.destroy();
-        return res.status(200).json("Успішно видалено");
+        return res.status(200).json("Successfully deleted");
     } catch (err) {
-        return res.status(422).json(`Сталася помилка: ${err}`);
+        return res.status(422).json(`An error occurred: ${err.message}`);
     }
 });
 

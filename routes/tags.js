@@ -4,7 +4,7 @@ const Tags = require("../models/tags");
 const Articles = require("../models/articles");
 const ArticleTags = require("../models/ArticleTags");
 
-// Обробка/Створення коментарів
+// Processing/Creating comments
 router.post('/', async (req, res) => {
     try {
         const {name, articlesId} = req.body;
@@ -12,17 +12,17 @@ router.post('/', async (req, res) => {
         const articlCheck = await Articles.findOne({ where: { id: articlesId } });
         
         if (!name || !articlesId ) {
-            return res.status(400).json("Всі поля мають бути  заповнені");
+            return res.status(400).json("All fields must be filled in.");
         }
         if (!articlCheck) {
-            return res.status(404).json('Статтю не знайдено');
+            return res.status(404).json('Article not found');
         }
         const tags = await Tags.create({ name });
         await tags.addArticles(articlCheck);
-        res.status(200).json('Категорію додано до статті');
+        res.status(200).json('Category added to article');
 
     } catch (err) {
-        return res.status(500).json(err);
+        return res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 
