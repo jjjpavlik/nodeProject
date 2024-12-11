@@ -2,10 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Authors = require("../models/authors");
 
-// Processing/Author Creation
+// Create
 router.post('/', async (req, res) => {
     const { name, email } = req.body;
-
     if (!name || !email) {
         return res.status(400).json('Fields cannot be empty.');
     }
@@ -17,8 +16,37 @@ router.post('/', async (req, res) => {
         res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
+//Read
+router.get("/", async (req, res) => {
+    try{
+        const allAuthors = await Authors.findAll();
+        res.status(200).json(allAuthors);
+    }catch(err){
+        res.status(500).json(`An error occurred: ${err.message}`);
+    }
+});
+//Update
+router.put("/", async (req, res) => {
+    try{
+        const {authorId, name, email} = req.body;
+        const authorCheck = Authors.findOne({where:{id:authorId}});
 
-// Implementing author deletion
+        if(!authorCheck){
+            res.status(422).json("Author not found")
+        }
+        if(!name || !email){
+            res.status(422).json("Fields cannot be empty.")
+        }
+        await Authors.update({name, email},{where: {id: authorId}});
+        res.status(200).json("Author update")
+    }catch(err){
+        res.status(500).json(`An error occurred: ${err.message}`);
+    }
+
+   
+});
+
+// Delete
 router.delete("/:authorId", async (req, res) => {
     const { authorId } = req.params;
     const id = Number(authorId);

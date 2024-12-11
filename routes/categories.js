@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Categories = require("../models/categories");
 
-// Processing/Creating a category
+// Create Categories
 router.post('/', async (req, res) => {
     try {
         const { name } = req.body;
@@ -17,13 +17,13 @@ router.post('/', async (req, res) => {
             return res.status(422).json('Category already exists');
         }
         const category = await Categories.create({ name });
-        return res.status(200).json('Category created');
+        res.status(200).json('Category created');
     } catch (err) {
-        return res.status(500).json(`An error occurred: ${err}`);
+        return res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 
-// Get all categories
+// Read Categories
 router.get("/", async (req, res) => {
     try {
         const categories = await Categories.findAll();
@@ -32,8 +32,22 @@ router.get("/", async (req, res) => {
         res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
+// Update Categories
+router.put('/', async (req, res) =>{
+    try{
+        const{ categoryId, name }  = req.body;
+        const categoryCheck = await Categories.findOne({where: {id: categoryId}});
+        if (!categoryCheck || !categoryId || !name){
+            return res.status(422).json("There is no such category.");
+        }
+        await Categories.update({name}, {where: {id: categoryId}});
+        res.status(200).json("Category updated")
+    }catch(err){
+        return res.status(500).json(`An error occurred: ${err.message}`);
+    }
+});
 
-// Implementing category deletion
+// Delete Categories
 router.delete("/:categoryId", async (req, res) => {
     const { categoryId } = req.params;
     const id = Number(categoryId);

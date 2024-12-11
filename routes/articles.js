@@ -3,8 +3,9 @@ const router = express.Router();
 const Articles = require("../models/articles");
 const Categories = require("../models/categories");
 const Authors = require("../models/authors");
+const { where } = require("sequelize");
 
-// Processing/Creating a post
+// Create
 router.post('/', async (req, res) => {
     const { title, content, authorId, categoryId } = req.body;
 
@@ -29,7 +30,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get all articles in a category
+// Read
 router.get("/categories/:categoryId", async (req, res) => {
     const { categoryId } = req.params;
     const checkId = Number(categoryId);
@@ -80,15 +81,27 @@ router.get("/authors/:authorId", async (req, res) => {
     }
 });
 
-// Implementing article deletion
-router.delete("/:articleId", async (req, res) => {
-    const { articleId } = req.params;
-    const id = Number(articleId);
-
-    if (isNaN(id)) {
-        return res.status(400).json("id can only be a number");
+//Update
+router.put("/", async (req, res) => {
+try{
+    const {articleId, title, content, authorId, categoryId } = req.body;
+    const checkArticle = await Articles.findOne({where:{id: articleId}});
+    if(!checkArticle){
+        return res.status(404).json('Articles not found');
     }
+    if (!title || !content || !authorId || !categoryId) {
+        return res.status(422).json('Fields cannot be empty.');
+    }
+    await Articles.update({title, content, authorId, categoryId}, {where:{id: articleId}});
+    res.status(200).json("Articles update");
+}catch(err){
+    return res.status(422).json(`An error occurred: ${err.message}`);
+}
+});
 
+// Delete
+router.delete("/", async (req, res) => {
+    const { articleId } = req.body;
     try {
         const article = await Articles.findByPk(id);
         if (!article) {
