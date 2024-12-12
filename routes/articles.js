@@ -31,14 +31,8 @@ router.post('/', async (req, res) => {
 });
 
 // Read
-router.get("/categories/:categoryId", async (req, res) => {
-    const { categoryId } = req.params;
-    const checkId = Number(categoryId);
-
-    if (isNaN(checkId)) {
-        return res.status(400).json("Id must consist only of numbers");
-    }
-
+router.get("/", async (req, res) => {
+    const { categoryId } = req.body;
     const categoryCheck = await Categories.findOne({ where: { id: categoryId } });
 
     if (!categoryCheck) {
@@ -57,13 +51,8 @@ router.get("/categories/:categoryId", async (req, res) => {
 });
 
 // Get all articles by the author
-router.get("/authors/:authorId", async (req, res) => {
-    const { authorId } = req.params;
-    const checkId = Number(authorId);
-
-    if (isNaN(checkId)) {
-        return res.status(400).json("Id must consist only of numbers");
-    }
+router.get("/", async (req, res) => {
+    const { authorId } = req.body;
 
     const authorCheck = await Authors.findOne({ where: { id: authorId } });
 

@@ -47,22 +47,16 @@ router.put("/", async (req, res) => {
 });
 
 // Delete
-router.delete("/:authorId", async (req, res) => {
-    const { authorId } = req.params;
-    const id = Number(authorId);
-
-    if (isNaN(id)) {
-        return res.status(400).json("id can only be a number");
-    }
-
+router.delete("/", async (req, res) => {
+    const { authorId } = req.body;
     try {
-        const author = await Authors.findByPk(id);
+        const authorCheck = await Authors.findeOne({where:{id: authorId}});
 
-        if (!author) {
+        if (!authorCheck) {
             return res.status(404).json('Id not found');
         }
 
-        await author.destroy();
+        await Authors.delete({where:{id: authorId}});
         res.status(200).json("Successfully deleted");
 
     } catch (err) {

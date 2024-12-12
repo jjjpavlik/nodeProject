@@ -37,6 +37,7 @@ router.get("/", async (req, res) => {
     return res.status(500).json(`An error occurred: ${err.message}`);
    } 
 });
+
 //Update
 router.put("/", async (req, res) => {
     try{
