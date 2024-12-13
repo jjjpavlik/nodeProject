@@ -1,25 +1,28 @@
 const express = require("express");
+const { z } = require("zod");
 const router = express.Router();
 const Categories = require("../models/categories");
+const {createCategoriesSchema, updateCategoriesSchema, deleteCategoriesSchema} = require("../validationSchems/categories");
 
 // Create Categories
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
     try {
-        const { name } = req.body;
-        
+        const validationData = createCategoriesSchema.parse(req.body);
+
         // Check for category uniqueness
-        const uniqueCheck = await Categories.findOne({ where: { name } });
-        
-        if (name === '') {
-            return res.status(400).json("Missing name");
-        }
+        const uniqueCheck = await Categories.findOne({ where: { name: validationData.name } });
         if (uniqueCheck) {
-            return res.status(422).json('Category already exists');
+            return res.status(409).json("Category already exists");
         }
-        const category = await Categories.create({ name });
-        res.status(200).json('Category created');
+
+        await Categories.create({ name: validationData.name });
+        res.status(201).json("Category created");
     } catch (err) {
-        return res.status(500).json(`An error occurred: ${err.message}`);
+        if (err.name === "ZodError") {
+            return res.status(400).json(err.errors);
+        }
+
+        res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 
@@ -32,41 +35,45 @@ router.get("/", async (req, res) => {
         res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
+
 // Update Categories
-router.put('/', async (req, res) =>{
-    try{
-        const{ categoryId, name }  = req.body;
-        const categoryCheck = await Categories.findOne({where: {id: categoryId}});
-        if (!categoryCheck || !categoryId || !name){
-            return res.status(422).json("There is no such category.");
+router.put("/", async (req, res) => {
+    try {
+        const validationData = updateCategoriesSchema.parse(req.body);
+
+        const categoryCheck = await Categories.findOne({ where: { id: validationData.categoryId } });
+        if (!categoryCheck) {
+            return res.status(404).json("There is no such category");
         }
-        await Categories.update({name}, {where: {id: categoryId}});
-        res.status(200).json("Category updated")
-    }catch(err){
-        return res.status(500).json(`An error occurred: ${err.message}`);
+
+        await Categories.update({ name: validationData.name }, { where: { id: validationData.categoryId } });
+        res.status(200).json("Category updated");
+    } catch (err) {
+        if (err.name === "ZodError") {
+            return res.status(400).json(err.errors);
+        }
+
+        res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
 
 // Delete Categories
-router.delete("/:categoryId", async (req, res) => {
-    const { categoryId } = req.params;
-    const id = Number(categoryId);
-    
-    if (isNaN(id)) {
-        return res.status(400).json("id can only be a number");
-    }
-    
+router.delete("/", async (req, res) => {
     try {
-        const category = await Categories.findByPk(id);
-        
+        const validationData = deleteCategoriesSchema.parse(req.body);
+
+        const category = await Categories.findOne({ where: { id: validationData.categoryId } });
         if (!category) {
-            return res.status(404).json('Id not found');
+            return res.status(404).json("Id not found");
         }
-        
-        await category.destroy();
+
+        await Categories.destroy({ where: { id: validationData.categoryId } });
         res.status(200).json("Successfully deleted");
-        
     } catch (err) {
+        if (err.name === "ZodError") {
+            return res.status(400).json(err.errors);
+        }
+
         res.status(500).json(`An error occurred: ${err.message}`);
     }
 });
