@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { types } = require("pg");
 const express = require('express');
 const sequelize = require('./config/database');
@@ -26,5 +28,6 @@ sequelize.sync({ alter: true })
     .catch(err => console.error(`An error occurred: ${err.message}`));
 
 // API start
-app.listen(8080, () => console.log('The server is deployed on port 8080'));
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log('The server is deployed on port 8080'));
 

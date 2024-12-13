@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
     "webcam-easy": "^1.1.1",
