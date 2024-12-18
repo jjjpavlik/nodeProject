@@ -6,7 +6,7 @@ const Articles = require("./articles");
 const Authors = require("./authors");
 const Comments = require("./comments");
 const Tags = require("./tags");
-const ArticleTags = require("./ArticleTags");
+const articlesTags = require("./articlesTags");
 
 // Логіка прив'язок таблиць
 
@@ -46,7 +46,7 @@ Articles.hasMany(Comments, {
     onDelete: 'CASCADE'
 });
 
-Articles.belongsToMany(Tags, {through: ArticleTags, foreignKey: "articleId", onDelete: "CASCADE"});
-Tags.belongsToMany(Articles, {through: ArticleTags, foreignKey: "tagId", onDelete: "CASCADE"});
+Articles.belongsToMany(Tags, {through: articlesTags, foreignKey: "articleId", onDelete: "CASCADE"});
+Tags.belongsToMany(Articles, {through: articlesTags, foreignKey: "tagId", onDelete: "CASCADE"});
 
 module.exports = { Categories, Articles, Authors, Comments, Tags };
