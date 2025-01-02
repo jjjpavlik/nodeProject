@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
+    "start": "ts-node ./app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -10,40 +11,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "debug": "*",
-    "dotenv": "*",
-    "dottie": "*",
-    "inflection": "*",
-    "lodash": "*",
-    "moment": "*",
-    "moment-timezone": "*",
-    "ms": "*",
-    "pg": "*",
-    "pg-cloudflare": "*",
-    "pg-connection-string": "*",
-    "pg-int8": "*",
-    "pg-pool": "*",
-    "pg-protocol": "*",
-    "pg-types": "*",
-    "pgpass": "*",
-    "postgres-array": "*",
-    "postgres-bytea": "*",
-    "postgres-date": "*",
-    "postgres-interval": "*",
-    "retry-as-promised": "*",
-    "semver": "*",
-    "sequelize": "*",
-    "sequelize-pool": "*",
-    "split2": "*",
-    "toposort-class": "*",
-    "undici-types": "*",
-    "uuid": "*",
-    "validator": "*",
-    "wkx": "*",
-    "xtend": "*",
-    "zod": "*"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.5",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@types/node": "^20.11.21"
+    "@types/express": "^5.0.0",
+    "@types/pg": "^8.11.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2017",  // Вказуємо цільову версію JS
+    "module": "commonjs", // Для роботи з модулями CommonJS (стандарт для Node.js)
+    "moduleResolution": "node", // Визначаємо стратегію пошуку модулів
+    "esModuleInterop": true,  // Для коректної роботи з модулями CommonJS
+    "strict": true, // Включаємо строгий режим перевірки типів
+    "skipLibCheck": true,  // Пропускаємо перевірку типів бібліотек
+    "resolveJsonModule": true,  // Дозволяє імпортувати JSON файли
+    "outDir": "./dist",  // Виводимо скомпільовані файли в dist
+    "rootDir": "./src"  // Вказуємо, що вихідний код знаходиться в папці src
+  },
+  "include": ["src/**/*.ts"],  // Включаємо всі TypeScript файли в src
+  "exclude": ["node_modules"]  // Виключаємо папку node_modules
+}
