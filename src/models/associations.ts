@@ -1,53 +1,54 @@
 import Sequelize from "sequelize";
 import sequelize from "../config/database";
 
-import Categories from"./categories";
-import Articles from"./articles";
-import Authors from"./authors";
-import Comments from"./comments";
-import Tags from"./tags";
-import articlesTags from"./articlesTags";
+import Categories from "./categories";
+import Articles from "./articles";
+import Authors from "./authors";
+import Comments from "./comments";
+import Tags from "./tags";
+import articlesTags from "./articlesTags";
 
-// Логіка прив'язок таблиць
+// Logic for table associations
 
-// Категорії мають багато статей
+// Categories have many articles
 Categories.hasMany(Articles, {
-    foreignKey: 'categoryId', // Додає поле category_id до таблиці Articles
-    onDelete: 'CASCADE' // У разі видалення категорії статті також видаляються
+    foreignKey: 'categoryId', // Adds the category_id field to the Articles table
+    onDelete: 'CASCADE' // When a category is deleted, its articles are also deleted
 });
 
-// Статті належать до однієї категорії
+// Articles belong to one category
 Articles.belongsTo(Categories, {
-    foreignKey: 'categoryId', // Вказує, що стаття належить до певної категорії
+    foreignKey: 'categoryId', // Specifies that an article belongs to a specific category
     onDelete: 'CASCADE'
 });
 
-// Статті належать до одного автора
+// Articles belong to one author
 Articles.belongsTo(Authors, {
-    foreignKey: 'authorId', // Додає поле author_id до таблиці Articles
+    foreignKey: 'authorId', // Adds the author_id field to the Articles table
     onDelete: 'CASCADE'
 });
 
-// Автор має багато статей
+// Authors have many articles
 Authors.hasMany(Articles, {
-    foreignKey: 'authorId', // Вказує, що автор має багато статей
+    foreignKey: 'authorId', // Specifies that an author can have many articles
     onDelete: 'CASCADE'
 });
 
-// Коментарі належать до статей
+// Comments belong to articles
 Comments.belongsTo(Articles, {
-    foreignKey: 'articleId', // Додає поле article_id до таблиці Comments
+    foreignKey: 'articleId', // Adds the article_id field to the Comments table
     onDelete: 'CASCADE'
 });
 
-// Статті мають багато коментарів
+// Articles have many comments
 Articles.hasMany(Comments, {
-    foreignKey: 'articleId', // Вказує, що статті мають багато коментарів
+    foreignKey: 'articleId', // Specifies that articles can have many comments
     onDelete: 'CASCADE'
 });
 
-Articles.belongsToMany(Tags, {through: articlesTags, foreignKey: "articleId", onDelete: "CASCADE"});
-Tags.belongsToMany(Articles, {through: articlesTags, foreignKey: "tagId", onDelete: "CASCADE"});
+// Many-to-many relationship between Articles and Tags
+Articles.belongsToMany(Tags, { through: articlesTags, foreignKey: "articleId", onDelete: "CASCADE" });
+Tags.belongsToMany(Articles, { through: articlesTags, foreignKey: "tagId", onDelete: "CASCADE" });
 
 export {
     Categories,
